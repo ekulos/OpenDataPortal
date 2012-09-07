@@ -30,6 +30,7 @@ class OpenDataPortal:
         self.manifestf.write("""</ecodp:manifest>\n""")
         self.manifestf.close()
 
+# http://www.eea.europa.eu/data-and-maps/data/urban-atlas
     def createRecord(self, dataseturi, identifier):
         query = { 'query':"""
 PREFIX a: <http://www.eea.europa.eu/portal_types/Data#>
@@ -70,20 +71,22 @@ WHERE {
         dct:hasPart ?datatable.
   ?datatable dct:hasPart ?datafile.
   ?datafile dct:title ?dftitle;
-            dct:format ?format;
             dct:modified ?dfmodified
   FILTER (?dataset = <%s> )
   OPTIONAL { ?dataset dct:issued ?effective }
   OPTIONAL { ?dataset dct:modified ?modified }
   OPTIONAL { ?dataset a:themes ?theme }
   } UNION {
-   ?dataset dct:spatial ?spatial .
-  FILTER (?dataset = <%s> )
+   ?dataset dct:spatial ?spatial .  FILTER (?dataset = <%s>)
    ?spatial owl:sameAs ?pubspatial
-  FILTER(REGEX(?pubspatial, '^http://publications\\\.europa\\\.eu/resource/authority/country/'))
+        FILTER(REGEX(?pubspatial, '^http://publications.europa.eu/resource/authority/country/'))
+  } UNION {
+  ?dataset dct:hasPart ?datatable .  FILTER (?dataset = <%s>)
+  ?datatable dct:hasPart ?datafile.
+  ?datafile dct:format ?format
   }
 }
-""" % (dataseturi, dataseturi),
+""" % (dataseturi, dataseturi, dataseturi),
 'format':'application/xml' }
 
         url = "http://semantic.eea.europa.eu/sparql?" + urllib.urlencode(query)
