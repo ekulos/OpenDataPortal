@@ -39,6 +39,7 @@ PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX ecodp: <http://ec.europa.eu/open-data/ontologies/ec-odp#>
 PREFIX dcat: <http://www.w3.org/ns/dcat#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
 CONSTRUCT {
  ?dataset a dcat:Dataset;
@@ -54,9 +55,9 @@ CONSTRUCT {
        ecodp:keyword ?theme;
        dct:spatial ?pubspatial.
  ?dataset dcat:distribution ?datafile .
- ?datafile dcat:accessURL `bif:concat(?datafile,'/at_download/file')`;
+ ?datafile dcat:accessURL `STRDT(bif:concat(?datafile,'/at_download/file'), xsd:anyURI)`;
        a <http://www.w3.org/TR/vocab-dcat#Download>;
-       ecodp:distributionFormat "text/html";
+       ecodp:distributionFormat ?format;
        dct:description ?dftitle;
        dct:modified ?dfmodified
 }
@@ -69,9 +70,10 @@ WHERE {
         dct:hasPart ?datatable.
   ?datatable dct:hasPart ?datafile.
   ?datafile dct:title ?dftitle;
+            dct:format ?format;
             dct:modified ?dfmodified
   FILTER (?dataset = <%s> )
-  OPTIONAL { ?dataset dct:effective ?effective }
+  OPTIONAL { ?dataset dct:issued ?effective }
   OPTIONAL { ?dataset dct:modified ?modified }
   OPTIONAL { ?dataset a:themes ?theme }
   } UNION {
@@ -112,10 +114,14 @@ SELECT DISTINCT ?dataset ?id
 WHERE {
   ?dataset a a:Data ;
         a:id ?id;
+        dct:description ?description;
         dct:hasPart ?datatable.
+  OPTIONAL {?dataset dct:isReplacedBy ?isreplaced }
   ?datatable dct:hasPart ?datafile.
+  FILTER(!BOUND(?isreplaced))
 }
 """
+# ?datafile dct:issued ?effective.
 result = sparql.query("http://semantic.eea.europa.eu/sparql", listq)
 odp = OpenDataPortal()
 for row in result.fetchall():
