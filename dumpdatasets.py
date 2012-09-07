@@ -31,6 +31,9 @@ class OpenDataPortal:
         self.manifestf.close()
 
 # http://www.eea.europa.eu/data-and-maps/data/urban-atlas
+# For examples of datafilelink see http://www.eea.europa.eu/data-and-maps/data/urban-atlas/germany/@@rdf
+# For examples of sparql queries see http://www.eea.europa.eu/data-and-maps/data/biogeographical-regions-europe/codelist-for-bio-geographical-regions/@@rdf
+
     def createRecord(self, dataseturi, identifier):
         query = { 'query':"""
 PREFIX a: <http://www.eea.europa.eu/portal_types/Data#>
@@ -41,6 +44,7 @@ PREFIX ecodp: <http://ec.europa.eu/open-data/ontologies/ec-odp#>
 PREFIX dcat: <http://www.w3.org/ns/dcat#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX datafilelink: <http://www.eea.europa.eu/portal_types/DataFileLink#>
 
 CONSTRUCT {
  ?dataset a dcat:Dataset;
@@ -64,29 +68,32 @@ CONSTRUCT {
 }
 WHERE {
   {
-  ?dataset a a:Data ;
+   ?dataset a a:Data ;
         a:id ?id;
         dct:title ?title;
         dct:description ?description;
         dct:hasPart ?datatable.
-  ?datatable dct:hasPart ?datafile.
-  ?datafile dct:title ?dftitle;
+   ?datatable dct:hasPart ?datafile.
+   ?datafile a            <http://www.eea.europa.eu/portal_types/DataFile#DataFile>;
+            dct:title    ?dftitle;
             dct:modified ?dfmodified
-  FILTER (?dataset = <%s> )
-  OPTIONAL { ?dataset dct:issued ?effective }
-  OPTIONAL { ?dataset dct:modified ?modified }
-  OPTIONAL { ?dataset a:themes ?theme }
+   OPTIONAL { ?dataset dct:issued ?effective }
+   OPTIONAL { ?dataset dct:modified ?modified }
   } UNION {
-   ?dataset dct:spatial ?spatial .  FILTER (?dataset = <%s>)
+   ?dataset dct:subject ?theme  FILTER isLiteral(?theme)
+  } UNION {
+   ?dataset dct:spatial ?spatial .
    ?spatial owl:sameAs ?pubspatial
         FILTER(REGEX(?pubspatial, '^http://publications.europa.eu/resource/authority/country/'))
   } UNION {
-  ?dataset dct:hasPart ?datatable .  FILTER (?dataset = <%s>)
-  ?datatable dct:hasPart ?datafile.
-  ?datafile dct:format ?format
+   ?dataset dct:hasPart ?datatable .
+   ?datatable dct:hasPart ?datafile.
+   ?datafile a          <http://www.eea.europa.eu/portal_types/DataFile#DataFile>;
+             dct:format ?format
   }
+  FILTER (?dataset = <%s> )
 }
-""" % (dataseturi, dataseturi, dataseturi),
+""" % dataseturi,
 'format':'application/xml' }
 
         url = "http://semantic.eea.europa.eu/sparql?" + urllib.urlencode(query)
