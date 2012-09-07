@@ -45,6 +45,7 @@ PREFIX dcat: <http://www.w3.org/ns/dcat#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX datafilelink: <http://www.eea.europa.eu/portal_types/DataFileLink#>
+PREFIX datafile: <http://www.eea.europa.eu/portal_types/DataFile#>
 
 CONSTRUCT {
  ?dataset a dcat:Dataset;
@@ -73,32 +74,34 @@ WHERE {
         dct:title ?title;
         dct:description ?description;
         dct:hasPart ?datatable.
-   ?datatable dct:hasPart ?datafile.
-   { 
-     {SELECT ?datafile STRDT(bif:concat(?datafile,'/at_download/file'), xsd:anyURI) AS ?downloadUrl
-     WHERE {
-       ?datafile a            <http://www.eea.europa.eu/portal_types/DataFile#DataFile> }
-     }
-   }
- UNION
-   { ?datafile a            datafilelink:DataFileLink;
-               datafilelink:remoteUrl ?downloadUrl }
-     ?datafile dct:title    ?dftitle .
-     ?datafile dct:modified ?dfmodified
- 
    OPTIONAL { ?dataset dct:issued ?effective }
    OPTIONAL { ?dataset dct:modified ?modified }
+   ?datatable dct:hasPart ?datafile.
+   { 
+     {
+       SELECT DISTINCT ?datafile STRDT(bif:concat(?datafile,'/at_download/file'), xsd:anyURI) AS ?downloadUrl ?format
+       WHERE {
+         ?datafile a datafile:DataFile;
+                   dct:format ?format
+       }
+     }
+   } UNION {
+     {
+       SELECT DISTINCT ?datafile STRDT(?remoteUrl, xsd:anyURI) AS ?downloadUrl 'application/octet-stream' AS ?format
+       WHERE {
+         ?datafile a datafilelink:DataFileLink;
+                   datafilelink:remoteUrl ?remoteUrl
+       }
+     }
+   }
+   ?datafile dct:title    ?dftitle .
+   ?datafile dct:modified ?dfmodified
   } UNION {
    ?dataset dct:subject ?theme  FILTER (isLiteral(?theme) && !REGEX(?theme,'[()/]'))
   } UNION {
    ?dataset dct:spatial ?spatial .
    ?spatial owl:sameAs ?pubspatial
         FILTER(REGEX(?pubspatial, '^http://publications.europa.eu/resource/authority/country/'))
-  } UNION {
-   ?dataset dct:hasPart ?datatable .
-   ?datatable dct:hasPart ?datafile.
-   ?datafile a          <http://www.eea.europa.eu/portal_types/DataFile#DataFile>;
-             dct:format ?format
   }
   FILTER (?dataset = <%s> )
 }
