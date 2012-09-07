@@ -7,6 +7,7 @@ import sparql
 class OpenDataPortal:
 
     def __init__(self):
+       self.manifestnum = 0
        self.manifestf = open('manifest.xml','w')
        self.manifestf.write("""<?xml version="1.0" encoding="UTF-8"?>
 <ecodp:manifest
@@ -20,9 +21,10 @@ class OpenDataPortal:
 	ecodp:priority="normal">
 """)
     def createManifestLine(self, dataseturi, identifier):
-        self.manifestf.write("""<ecodp:action ecodp:id="add1" ecodp:object-uri="%s" ecodp:object-type="dataset">
+        self.manifestnum += 1
+        self.manifestf.write("""<ecodp:action ecodp:id="add%d" ecodp:object-uri="%s" ecodp:object-type="dataset">
 		<ecodp:add-replace ecodp:object-status="published"  ecodp:package-path="/datasets/%s.rdf"/>
-	</ecodp:action>""" % ( dataseturi, identifier))
+	</ecodp:action>\n""" % ( self.manifestnum, dataseturi, identifier))
 
     def enditall(self):
         self.manifestf.write("""</ecodp:manifest>\n""")
@@ -52,31 +54,34 @@ CONSTRUCT {
        ecodp:keyword ?theme;
        dct:spatial ?pubspatial.
  ?dataset dcat:distribution ?datafile .
- ?datafile dcat:accessURL `IRI(bif:concat(?datafile,'/at_download/file'))`;
+ ?datafile dcat:accessURL `bif:concat(?datafile,'/at_download/file')`;
        a <http://www.w3.org/TR/vocab-dcat#Download>;
        ecodp:distributionFormat "text/html";
        dct:description ?dftitle;
        dct:modified ?dfmodified
 }
 WHERE {
+  {
   ?dataset a a:Data ;
         a:id ?id;
         dct:title ?title;
+        dct:description ?description;
         dct:hasPart ?datatable.
   ?datatable dct:hasPart ?datafile.
   ?datafile dct:title ?dftitle;
             dct:modified ?dfmodified
   FILTER (?dataset = <%s> )
-  OPTIONAL { ?dataset dct:description ?description }
   OPTIONAL { ?dataset dct:effective ?effective }
   OPTIONAL { ?dataset dct:modified ?modified }
   OPTIONAL { ?dataset a:themes ?theme }
-  OPTIONAL { ?dataset dct:spatial ?spatial .
+  } UNION {
+   ?dataset dct:spatial ?spatial .
+  FILTER (?dataset = <%s> )
    ?spatial owl:sameAs ?pubspatial
   FILTER(REGEX(?pubspatial, '^http://publications\\\.europa\\\.eu/resource/authority/country/'))
-   }
+  }
 }
-""" % dataseturi,
+""" % (dataseturi, dataseturi),
 'format':'application/xml' }
 
         url = "http://semantic.eea.europa.eu/sparql?" + urllib.urlencode(query)
@@ -99,13 +104,16 @@ WHERE {
         outf.close()
 
 #------------------------
+#FILTER(?dataset = <http://www.eea.europa.eu/data-and-maps/data/corine-land-cover-2000-clc2000-seamless-vector-database-2>)
 listq = """
 PREFIX a: <http://www.eea.europa.eu/portal_types/Data#>
+PREFIX dct: <http://purl.org/dc/terms/>
 SELECT DISTINCT ?dataset ?id
 WHERE {
   ?dataset a a:Data ;
-        a:id ?id
-FILTER(?dataset = <http://www.eea.europa.eu/data-and-maps/data/corine-land-cover-2000-clc2000-seamless-vector-database-2>)
+        a:id ?id;
+        dct:hasPart ?datatable.
+  ?datatable dct:hasPart ?datafile.
 }
 """
 result = sparql.query("http://semantic.eea.europa.eu/sparql", listq)
