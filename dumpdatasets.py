@@ -60,8 +60,8 @@ CONSTRUCT {
        ecodp:keyword ?theme;
        dct:spatial ?pubspatial.
  ?dataset dcat:distribution ?datafile .
- ?datafile dcat:accessURL `STRDT(bif:concat(?datafile,'/at_download/file'), xsd:anyURI)`;
-       a <http://www.w3.org/TR/vocab-dcat#Download>;
+ ?datafile dcat:accessURL ?downloadUrl.
+ ?datafile a <http://www.w3.org/TR/vocab-dcat#Download>;
        ecodp:distributionFormat ?format;
        dct:description ?dftitle;
        dct:modified ?dfmodified
@@ -74,13 +74,22 @@ WHERE {
         dct:description ?description;
         dct:hasPart ?datatable.
    ?datatable dct:hasPart ?datafile.
-   ?datafile a            <http://www.eea.europa.eu/portal_types/DataFile#DataFile>;
-            dct:title    ?dftitle;
-            dct:modified ?dfmodified
+   { 
+     {SELECT ?datafile STRDT(bif:concat(?datafile,'/at_download/file'), xsd:anyURI) AS ?downloadUrl
+     WHERE {
+       ?datafile a            <http://www.eea.europa.eu/portal_types/DataFile#DataFile> }
+     }
+   }
+ UNION
+   { ?datafile a            datafilelink:DataFileLink;
+               datafilelink:remoteUrl ?downloadUrl }
+     ?datafile dct:title    ?dftitle .
+     ?datafile dct:modified ?dfmodified
+ 
    OPTIONAL { ?dataset dct:issued ?effective }
    OPTIONAL { ?dataset dct:modified ?modified }
   } UNION {
-   ?dataset dct:subject ?theme  FILTER isLiteral(?theme)
+   ?dataset dct:subject ?theme  FILTER (isLiteral(?theme) && !REGEX(?theme,'[()/]'))
   } UNION {
    ?dataset dct:spatial ?spatial .
    ?spatial owl:sameAs ?pubspatial
