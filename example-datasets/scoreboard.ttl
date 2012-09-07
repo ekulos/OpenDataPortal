@@ -1,0 +1,83 @@
+<http://data.lod2.eu/scoreboard> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/dcat#Dataset> .
+<http://data.lod2.eu/scoreboard> <http://purl.org/dc/terms/title> "Digital Agenda Scoreboard"@en .
+<http://data.lod2.eu/scoreboard> <http://purl.org/dc/terms/alternative> "Scoreboard"@en .
+<http://data.lod2.eu/scoreboard> <http://purl.org/dc/terms/alternative> "Digital Agenda"@en .
+<http://data.lod2.eu/scoreboard> <http://purl.org/dc/terms/description> "European Commission services selected around 60 indicators, divided into thematic groups, which illustrate some key dimensions of the European information society (Broadband, Internet usage, Internet services, eGovernment, eCommerce, eBusiness). These indicators allow a comparison of progress across European countries as well as over time.\nYou can also browse the data with the help of a visualisation tools going at http://scoreboard.lod2.eu/ (where you are also able to download selected information in CSV and RDF).\nThe database with the selected indicators of the Digital Agenda Scoreboard is made of three tables:\n\u2022 a data table, with codes for the indicators, countries, years and values\n\u2022 an indicators table, with labels for indicators' codes, definition and scope, and a source code\n\u2022 a sources table, with details about sources and links to more methodological information The codes allow the creation of relations between the tables."@en .
+<http://data.lod2.eu/scoreboard> <http://ec.europa.eu/open-data/ontologies/ec-odp#keyword> "e-government inclusion"@en .
+<http://data.lod2.eu/scoreboard> <http://ec.europa.eu/open-data/ontologies/ec-odp#keyword> "internet"@en .
+<http://data.lod2.eu/scoreboard> <http://ec.europa.eu/open-data/ontologies/ec-odp#keyword> "e-commerce broadband"@en .
+<http://data.lod2.eu/scoreboard> <http://ec.europa.eu/open-data/ontologies/ec-odp#keyword> "information-society"@en .
+<http://data.lod2.eu/scoreboard> <http://ec.europa.eu/open-data/ontologies/ec-odp#keyword> "benchmarking"@en .
+<http://data.lod2.eu/scoreboard> <http://purl.org/dc/terms/identifier> "DAS-1138" .
+<http://ec.europa.eu/open-data/kos/interoperability-level/Political> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<http://data.lod2.eu/scoreboard> <http://ec.europa.eu/open-data/ontologies/ec-odp#interoperabilityLevel> <http://ec.europa.eu/open-data/kos/interoperability-level/Political> .
+<http://ec.europa.eu/open-data/kos/dataset-type/Statistical> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<http://data.lod2.eu/scoreboard> <http://ec.europa.eu/open-data/ontologies/ec-odp#datasetType> <http://ec.europa.eu/open-data/kos/dataset-type/Statistical> .
+<http://ec.europa.eu/open-data/kos/documentation-type/MainDocumentation> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+_:genid1 <http://ec.europa.eu/open-data/ontologies/ec-odp#documentationType> <http://ec.europa.eu/open-data/kos/documentation-type/MainDocumentation> .
+_:genid1 <http://ec.europa.eu/open-data/ontologies/ec-odp#accessURL> "http://ec.europa.eu/information_society/digital-agenda/"^^<http://www.w3.org/2001/XMLSchema#anyURI> .
+_:genid1 <http://purl.org/dc/terms/title> "The Digital Agenda Scoreboard home page"@en .
+<http://data.lod2.eu/scoreboard> <http://ec.europa.eu/open-data/ontologies/ec-odp#isDocumentedBy> _:genid1 .
+<http://ec.europa.eu/open-data/kos/documentation-type/RelatedWebPage> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+_:genid2 <http://ec.europa.eu/open-data/ontologies/ec-odp#documentationType> <http://ec.europa.eu/open-data/kos/documentation-type/RelatedWebPage> .
+_:genid2 <http://purl.org/dc/terms/title> "Digital Scoreboard prototype visualization application on EC Open Data Portal"@en .
+_:genid2 <http://ec.europa.eu/open-data/ontologies/ec-odp#accessURL> "http://ecportal.demo.ckan.org/open-data/apps"^^<http://www.w3.org/2001/XMLSchema#anyURI> .
+<http://data.lod2.eu/scoreboard> <http://ec.europa.eu/open-data/ontologies/ec-odp#isDocumentedBy> _:genid2 .
+<http://ec.europa.eu/open-data/kos/documentation-type/RelatedDocumentation> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+_:genid3 <http://ec.europa.eu/open-data/ontologies/ec-odp#documentationType> <http://ec.europa.eu/open-data/kos/documentation-type/RelatedDocumentation> .
+_:genid3 <http://purl.org/dc/terms/title> "Eiropas digit\u0101l\u0101 agenda: atsl\u0113gas publik\u0101cijas"@lv .
+_:genid3 <http://purl.org/dc/terms/title> "Digital Agenda for Europe: key publications"@en .
+_:genid3 <http://ec.europa.eu/open-data/ontologies/ec-odp#accessURL> "http://ec.europa.eu/information_society/digital-agenda/publications/index_en.htm"^^<http://www.w3.org/2001/XMLSchema#anyURI> .
+<http://data.lod2.eu/scoreboard> <http://ec.europa.eu/open-data/ontologies/ec-odp#isDocumentedBy> _:genid3 .
+_:genid4 <http://www.w3.org/ns/dcat#accessURL> "http://ec.europa.eu/open-data/data/uploads/INFSO/digital_scoreboard_05_december_2011.xls"^^<http://www.w3.org/2001/XMLSchema#anyURI> .
+_:genid4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/TR/vocab-dcat#Download> .
+_:genid4 <http://ec.europa.eu/open-data/ontologies/ec-odp#distributionFormat> "application/vnd.ms-excel" .
+_:genid4 <http://purl.org/dc/terms/description> "3 worksheets with the indicators, sources and data tables"@en .
+_:genid4 <http://purl.org/dc/terms/modified> "2012-04-01T01:01:01" .
+_:genid4 <http://purl.org/dc/terms/issued> "2004-04-02T01:01:01" .
+<http://data.lod2.eu/scoreboard> <http://www.w3.org/ns/dcat#distribution> _:genid4 .
+_:genid5 <http://www.w3.org/ns/dcat#accessURL> "http://data.lod2.eu/service/sparql/"^^<http://www.w3.org/2001/XMLSchema#anyURI> .
+_:genid5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/TR/vocab-dcat#WebService> .
+_:genid5 <http://ec.europa.eu/open-data/ontologies/ec-odp#distributionFormat> "webservice/sparql" .
+_:genid5 <http://purl.org/dc/terms/description> "SparQL access point of Digital Agenda Scoreboard"@en .
+<http://data.lod2.eu/scoreboard> <http://www.w3.org/ns/dcat#distribution> _:genid5 .
+_:genid6 <http://www.w3.org/ns/dcat#accessURL> "http://blogs.ec.europa.eu/digital-agenda/feed/"^^<http://www.w3.org/2001/XMLSchema#anyURI> .
+_:genid6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/TR/vocab-dcat#Feed> .
+_:genid6 <http://ec.europa.eu/open-data/ontologies/ec-odp#distributionFormat> "application/rss+xml" .
+_:genid6 <http://purl.org/dc/terms/description> "RSS feed of Digital Agenda Scoreboard"@en .
+_:genid6 <http://purl.org/dc/terms/issued> "2004-04-03" .
+<http://data.lod2.eu/scoreboard> <http://www.w3.org/ns/dcat#distribution> _:genid6 .
+_:genid7 <http://purl.org/dc/terms/description> "Catalog record for Digital Agenda Scoreboard in publicdata.eu"@en .
+_:genid7 <http://ec.europa.eu/open-data/ontologies/ec-odp#accessURL> "http://publicdata.eu/dataset/digital-agenda-scoreboard"^^<http://www.w3.org/2001/XMLSchema#anyURI> .
+_:genid7 <http://purl.org/dc/terms/modified> "2012-04-04T01:01:01" .
+_:genid7 <http://purl.org/dc/terms/issued> "2004-04-05" .
+<http://data.lod2.eu/scoreboard> <http://www.w3.org/ns/dcat#record> _:genid7 .
+<http://publications.europa.eu/resource/authority/ntu/BE> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<http://data.lod2.eu/scoreboard> <http://purl.org/dc/terms/spatial> <http://publications.europa.eu/resource/authority/ntu/BE> .
+<http://publications.europa.eu/resource/authority/ntu/DE> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<http://data.lod2.eu/scoreboard> <http://purl.org/dc/terms/spatial> <http://publications.europa.eu/resource/authority/ntu/DE> .
+<http://publications.europa.eu/resource/authority/corporate-body/INFSO> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<http://data.lod2.eu/scoreboard> <http://purl.org/dc/terms/publisher> <http://publications.europa.eu/resource/authority/corporate-body/INFSO> .
+<http://ec.europa.eu/dgs/information_society> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Agent> .
+<http://ec.europa.eu/dgs/information_society> <http://xmlns.com/foaf/0.1/phone> <tel:+352111111111> .
+<http://ec.europa.eu/dgs/information_society> <http://xmlns.com/foaf/0.1/mbox> <mailto:INFSO-TRUST-SECURITY@ec.europa.eu> .
+<http://ec.europa.eu/dgs/information_society> <http://xmlns.com/foaf/0.1/workplaceHomepage> <http://ec.europa.eu/dgs/information_society/index_en.htm> .
+<http://ec.europa.eu/dgs/information_society> <http://ec.europa.eu/open-data/ontologies/ec-odp#contactAddress> "rue Robert Stumper, L-2557, Luxembourg"@en .
+<http://ec.europa.eu/dgs/information_society> <http://xmlns.com/foaf/0.1/name> "INFSO"@en .
+<http://data.lod2.eu/scoreboard> <http://ec.europa.eu/open-data/ontologies/ec-odp#contactPoint> <http://ec.europa.eu/dgs/information_society> .
+<http://data.lod2.eu/scoreboard> <http://purl.org/dc/terms/issued> "2004-04-06T01:01:01" .
+<http://data.lod2.eu/scoreboard> <http://purl.org/dc/terms/modified> "2012-04-07T01:01:01" .
+_:genid8 <http://purl.org/dc/terms/identifier> "v1.0a" .
+_:genid8 <http://purl.org/dc/terms/description> "Version 1.0"@en .
+<http://data.lod2.eu/scoreboard> <http://purl.org/dc/terms/hasVersion> _:genid8 .
+<http://ec.europa.eu/open-data/kos/licence/EuropeanCommission> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<http://data.lod2.eu/scoreboard> <http://purl.org/dc/terms/license> <http://ec.europa.eu/open-data/kos/licence/EuropeanCommission> .
+<http://ec.europa.eu/open-data/kos/dataset-status/Completed> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<http://data.lod2.eu/scoreboard> <http://ec.europa.eu/open-data/ontologies/ec-odp#datasetStatus> <http://ec.europa.eu/open-data/kos/dataset-status/Completed> .
+<http://publications.europa.eu/resource/authority/language/ENG> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#Concept> .
+<http://data.lod2.eu/scoreboard> <http://purl.org/dc/terms/language> <http://publications.europa.eu/resource/authority/language/ENG> .
+<http://data.lod2.eu/scoreboard> <http://ec.europa.eu/open-data/ontologies/ec-odp#accrualPeriodicity> "Twice a month"@en .
+<http://ec.europa.eu/open-data/ontologies/ec-odp-example#PeriodExample> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/dc/terms/PeriodOfTime> .
+<http://ec.europa.eu/open-data/ontologies/ec-odp-example#PeriodExample> <http://ec.europa.eu/open-data/ontologies/ec-odp#periodStart> "2004-04-09" .
+<http://ec.europa.eu/open-data/ontologies/ec-odp-example#PeriodExample> <http://ec.europa.eu/open-data/ontologies/ec-odp#periodEnd> "2012-04-08" .
+<http://data.lod2.eu/scoreboard> <http://purl.org/dc/terms/temporal> <http://ec.europa.eu/open-data/ontologies/ec-odp-example#PeriodExample> .

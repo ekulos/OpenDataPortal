@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:adms="http://purl.org/adms/"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:dct="http://purl.org/dc/terms/"
+	xmlns:owl="http://www.w3.org/2002/07/owl#"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+	xmlns:dcam="http://purl.org/dc/dcam/"
+	xmlns:ecodpkos="http://ec.europa.eu/open-data/ontologies/ec-odp#"
+	xmlns:ecodp="http://ec.europa.eu/open-data/ontologies/ec-odp#">
+	<skos:ConceptScheme rdf:about="http://ec.europa.eu/open-data/kos/licence">
+		<rdfs:label>Licence vocabulary</rdfs:label>
+		<skos:prefLabel xml:lang="en">Licence vocabulary</skos:prefLabel>
+	</skos:ConceptScheme>
+	<skos:Concept rdf:about="http://ec.europa.eu/open-data/kos/licence/EuroStat">
+		<skos:inScheme rdf:resource="http://ec.europa.eu/open-data/kos/licence"/>
+		<skos:prefLabel xml:lang="en">EuroStat data licence</skos:prefLabel>
+		<skos:altLabel xml:lang="en">EuroStat licence</skos:altLabel>
+	</skos:Concept>
+	<skos:Concept rdf:about="http://ec.europa.eu/open-data/kos/licence/EuropeanCommission">
+		<skos:inScheme rdf:resource="http://ec.europa.eu/open-data/kos/licence"/>
+		<skos:prefLabel xml:lang="en">European Commission Open Licence</skos:prefLabel>
+		<skos:altLabel xml:lang="en">European Commission Open Data Licence</skos:altLabel>
+	</skos:Concept>
+</rdf:RDF>

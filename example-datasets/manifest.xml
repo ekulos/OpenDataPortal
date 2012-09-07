@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ecodp:manifest
+	xmlns:ecodp="http://ec.europa.eu/open-data/ontologies/ec-odp#"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://ec.europa.eu/open-data/ontologies/protocol-v1.0/ odp-protocol.xsd"
+	ecodp:version="1.0"
+	ecodp:package-id="packid1"
+	ecodp:creation-date-time="2012-04-23T11:22:35"
+	ecodp:publisher="http://publications.europa.eu/resource/authority/corporate-body/INFSO"
+	ecodp:priority="normal">
+	<ecodp:action ecodp:id="rm2" ecodp:object-uri="http://data.lod2.eu/soreboard" ecodp:object-type="dataset">
+		<ecodp:remove/>
+	</ecodp:action>
+	<ecodp:action ecodp:id="add1" ecodp:object-uri="http://data.lod2.eu/scoreboard" ecodp:object-type="dataset">	
+		<ecodp:add-replace ecodp:object-status="draft"  ecodp:package-path="/datasets/scoreboard.rdf"/>
+	</ecodp:action>
+<!-- The URL has to start with http://ec.europa.eu/open-data/data/uploads/{provid}/ where {provid} is a unique publisher identifier that can be used as folder name  --> 
+<!-- preferably use tha last segment of the publisher URI (from corporate bodies NAL) -->   	
+	<ecodp:action ecodp:id="add2" ecodp:object-uri="http://ec.europa.eu/open-data/data/uploads/INFSO/digital_scoreboard_05_december_2011.xls" ecodp:object-type="upload">	
+		<ecodp:upload-distribution ecodp:package-path="/datasets/scoreboard/digital_scoreboard_05_december_2011.xls"/>
+	</ecodp:action>	
+	<ecodp:action ecodp:id="change1" ecodp:object-uri="http://data.lod2.eu/scoreboard" ecodp:object-type="dataset">	
+		<ecodp:change-status ecodp:object-status="published"/>
+	</ecodp:action>	
+</ecodp:manifest>

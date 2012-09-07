@@ -1,0 +1,183 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:ecodp="http://ec.europa.eu/open-data/ontologies/ec-odp#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:foaf="http://xmlns.com/foaf/0.1/"
+    xmlns:dct="http://purl.org/dc/terms/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+    xmlns:dcat="http://www.w3.org/ns/dcat#"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns="http://ec.europa.eu/open-data/ontologies/ec-odp-example#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:skos-xl="http://www.w3.org/2008/05/skos-xl#"
+    xmlns:dcam="http://purl.org/dc/dcam/"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+<!-- Dataset type and URI, don't fill in the CKAN catalog identifier here -->
+  <dcat:Dataset rdf:about="http://data.lod2.eu/scoreboard">
+  	
+<!-- Title, 1..1 - can be filled in in multiple translations though-->
+    <dct:title xml:lang="en">Digital Agenda Scoreboard</dct:title>
+
+<!-- Alternative Title(s), 0..*-->    	
+    <dct:alternative xml:lang="en">Scoreboard</dct:alternative>
+    <dct:alternative xml:lang="en">Digital Agenda</dct:alternative>
+
+<!-- Description, 1..*-->
+    <dct:description xml:lang="en">European Commission services selected around 60 indicators, divided into thematic groups, which illustrate some key dimensions of the European information society (Broadband, Internet usage, Internet services, eGovernment, eCommerce, eBusiness). These indicators allow a comparison of progress across European countries as well as over time.
+You can also browse the data with the help of a visualisation tools going at http://scoreboard.lod2.eu/ (where you are also able to download selected information in CSV and RDF).
+The database with the selected indicators of the Digital Agenda Scoreboard is made of three tables:
+• a data table, with codes for the indicators, countries, years and values
+• an indicators table, with labels for indicators' codes, definition and scope, and a source code
+• a sources table, with details about sources and links to more methodological information The codes allow the creation of relations between the tables.</dct:description>
+
+<!-- Keyword, 0..*-->
+    <ecodp:keyword xml:lang="en">e-government inclusion</ecodp:keyword>
+    <ecodp:keyword xml:lang="en">internet</ecodp:keyword>
+    <ecodp:keyword xml:lang="en">e-commerce broadband</ecodp:keyword>
+    <ecodp:keyword xml:lang="en">information-society</ecodp:keyword>
+    <ecodp:keyword xml:lang="en">benchmarking</ecodp:keyword>
+
+<!-- Identifier, 0..*-->
+    <dct:identifier>DAS-1138</dct:identifier>
+
+<!-- Interoperability level, 0..1-->
+    <ecodp:interoperabilityLevel>
+      <skos:Concept rdf:about="http://ec.europa.eu/open-data/kos/interoperability-level/Political"/>
+    </ecodp:interoperabilityLevel>
+
+<!-- Dataset type, 0..* -->
+    <ecodp:datasetType>
+      <skos:Concept rdf:about="http://ec.europa.eu/open-data/kos/dataset-type/Statistical"/>
+    </ecodp:datasetType>
+
+<!-- Documentation, 0..* -->
+    <ecodp:isDocumentedBy rdf:parseType="Resource">
+<!-- Documentation type, 1..1 -->    	
+        <ecodp:documentationType>
+          <skos:Concept rdf:about="http://ec.europa.eu/open-data/kos/documentation-type/MainDocumentation"/>
+        </ecodp:documentationType>
+<!-- Documentation access URL, 1..1 -->
+        <ecodp:accessURL rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://ec.europa.eu/information_society/digital-agenda/</ecodp:accessURL>
+<!-- Documentation title, 1..1 -->
+        <dct:title xml:lang="en">The Digital Agenda Scoreboard home page</dct:title>
+    </ecodp:isDocumentedBy>
+    <ecodp:isDocumentedBy rdf:parseType="Resource">
+        <ecodp:documentationType>
+          <skos:Concept rdf:about="http://ec.europa.eu/open-data/kos/documentation-type/RelatedWebPage"/>
+        </ecodp:documentationType>
+        <dct:title xml:lang="en">Digital Scoreboard prototype visualization application on EC Open Data Portal</dct:title>
+        <ecodp:accessURL rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://ecportal.demo.ckan.org/open-data/apps</ecodp:accessURL>
+    </ecodp:isDocumentedBy>
+    <ecodp:isDocumentedBy rdf:parseType="Resource">
+        <ecodp:documentationType>
+          <skos:Concept rdf:about="http://ec.europa.eu/open-data/kos/documentation-type/RelatedDocumentation"/>
+        </ecodp:documentationType>
+        <dct:title xml:lang="lv">Eiropas digitālā agenda: atslēgas publikācijas</dct:title>
+        <dct:title xml:lang="en">Digital Agenda for Europe: key publications</dct:title>
+        <ecodp:accessURL rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://ec.europa.eu/information_society/digital-agenda/publications/index_en.htm</ecodp:accessURL>
+    </ecodp:isDocumentedBy>
+
+<!-- Distribution, 0..* -->
+    <dcat:distribution rdf:parseType="Resource">
+<!-- Distribution access URL, 1..1 -->
+<!-- If pointing the uploads within the package, the URL has to start with http://ec.europa.eu/open-data/data/uploads/{provid}/ where {provid} is a unique publisher identifier that can be used as folder name  -->
+<!-- preferably use tha last segment of the publisher URI (from corporate bodies NAL) -->
+        <dcat:accessURL rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://ec.europa.eu/open-data/data/uploads/INFSO/digital_scoreboard_05_december_2011.xls</dcat:accessURL>	
+<!-- Distribution type, 1..1 -->
+        <rdf:type rdf:resource="http://www.w3.org/TR/vocab-dcat#Download"/>    	
+<!-- Distribution format, 1..1 -->           	
+        <ecodp:distributionFormat>application/vnd.ms-excel</ecodp:distributionFormat>
+<!-- Distribution format, 0..1 -->
+        <dct:description xml:lang="en">3 worksheets with the indicators, sources and data tables</dct:description>
+<!-- Distribution last modification data, 0..1 -->
+        <dct:modified>2012-04-01T01:01:01</dct:modified>
+<!-- Distribution issued, 0..1 -->
+        <dct:issued>2004-04-02T01:01:01</dct:issued>
+    </dcat:distribution>
+    <dcat:distribution rdf:parseType="Resource">
+        <dcat:accessURL rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://data.lod2.eu/service/sparql/</dcat:accessURL>    	
+        <rdf:type rdf:resource="http://www.w3.org/TR/vocab-dcat#WebService"/>
+        <ecodp:distributionFormat>webservice/sparql</ecodp:distributionFormat>        	 	
+        <dct:description xml:lang="en">SparQL access point of Digital Agenda Scoreboard</dct:description>
+    </dcat:distribution>
+    <dcat:distribution rdf:parseType="Resource">
+        <dcat:accessURL rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://blogs.ec.europa.eu/digital-agenda/feed/</dcat:accessURL>
+        <rdf:type rdf:resource="http://www.w3.org/TR/vocab-dcat#Feed"/>
+        <ecodp:distributionFormat>application/rss+xml</ecodp:distributionFormat>
+        <dct:description xml:lang="en">RSS feed of Digital Agenda Scoreboard</dct:description>
+        <dct:issued>2004-04-03</dct:issued>
+    </dcat:distribution>
+
+<!-- Catalog record, 0..* -->
+    <dcat:record rdf:parseType="Resource">
+        <dct:description xml:lang="en">Catalog record for Digital Agenda Scoreboard in publicdata.eu</dct:description>
+        <ecodp:accessURL rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://publicdata.eu/dataset/digital-agenda-scoreboard</ecodp:accessURL>
+        <dct:modified>2012-04-04T01:01:01</dct:modified>
+        <dct:issued>2004-04-05</dct:issued>
+    </dcat:record>
+
+<!-- Geographical coverage 0..* -->
+    <dct:spatial>
+      <skos:Concept rdf:about="http://publications.europa.eu/resource/authority/ntu/BE"/>
+    </dct:spatial>
+    <dct:spatial>
+      <skos:Concept rdf:about="http://publications.europa.eu/resource/authority/ntu/DE"/>
+    </dct:spatial>
+
+<!-- Publisher 1..1 -->
+    <dct:publisher>
+      <skos:Concept rdf:about="http://publications.europa.eu/resource/authority/corporate-body/INFSO"/>
+    </dct:publisher>
+
+<!-- Contact point 0..1 -->
+    <ecodp:contactPoint>
+    	<foaf:Agent rdf:about="http://ec.europa.eu/dgs/information_society">
+        <foaf:phone rdf:resource="tel:+352111111111"/>
+        <foaf:mbox rdf:resource="mailto:INFSO-TRUST-SECURITY@ec.europa.eu"/>
+        <foaf:workplaceHomepage rdf:resource="http://ec.europa.eu/dgs/information_society/index_en.htm"/>
+        <ecodp:contactAddress xml:lang="en">rue Robert Stumper, L-2557, Luxembourg</ecodp:contactAddress>
+        <foaf:name xml:lang="en">INFSO</foaf:name>
+      </foaf:Agent>
+    </ecodp:contactPoint>
+
+<!-- Dataset issued 0..1 -->
+    <dct:issued>2004-04-06T01:01:01</dct:issued>
+
+<!-- Dataset last modification 0..1 -->
+    <dct:modified>2012-04-07T01:01:01</dct:modified>
+
+<!-- Version 0..1 -->
+    <dct:hasVersion rdf:parseType="Resource">
+        <dct:identifier>v1.0a</dct:identifier>
+        <dct:description xml:lang="en">Version 1.0</dct:description>
+    </dct:hasVersion>
+
+<!-- License 1..* -->
+    <dct:license>
+      <skos:Concept rdf:about="http://ec.europa.eu/open-data/kos/licence/EuropeanCommission"/>
+    </dct:license>
+
+<!-- Status 1..1 -->
+    <ecodp:datasetStatus>
+      <skos:Concept rdf:about="http://ec.europa.eu/open-data/kos/dataset-status/Completed"/>
+    </ecodp:datasetStatus>
+
+<!-- Language 0..* -->
+    <dct:language>
+      <skos:Concept rdf:about="http://publications.europa.eu/resource/authority/language/ENG"/>
+    </dct:language>
+
+<!-- Accrial Periodicity 0..1 -->
+    <ecodp:accrualPeriodicity xml:lang="en">Twice a month</ecodp:accrualPeriodicity>
+
+<!-- Temporal coverage (period) 0..1 -->
+    <dct:temporal>
+      <dct:PeriodOfTime rdf:about="http://ec.europa.eu/open-data/ontologies/ec-odp-example#PeriodExample">
+        <ecodp:periodStart>2004-04-09</ecodp:periodStart>
+        <ecodp:periodEnd>2012-04-08</ecodp:periodEnd>
+      </dct:PeriodOfTime>
+    </dct:temporal>
+
+  </dcat:Dataset>
+</rdf:RDF>

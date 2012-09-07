@@ -1,0 +1,7 @@
+#!/bin/sh
+
+timestamp=`date '+%Y%m%dT%H%M%S'`
+rm -f datasets/*.rdf
+python dumpdatasets.py
+#rm EEA-*.zip
+zip EEA-${timestamp}.zip manifest.xml datasets/*.rdf
