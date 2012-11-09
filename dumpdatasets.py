@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import sys
+import sys,time
 import urllib,urllib2
 import sparql
 
 class OpenDataPortal:
 
-    def __init__(self):
+    def __init__(self, endpoint):
+       self.endpoint = endpoint
        self.manifestnum = 0
        self.manifestf = open('manifest.xml','w')
        self.manifestf.write("""<?xml version="1.0" encoding="UTF-8"?>
@@ -16,15 +17,24 @@ class OpenDataPortal:
 	xsi:schemaLocation="http://ec.europa.eu/open-data/ontologies/protocol-v1.0/ odp-protocol.xsd"
 	ecodp:version="1.0"
 	ecodp:package-id="EEA"
-	ecodp:creation-date-time="2012-04-26T11:22:35"
+	ecodp:creation-date-time="%s"
 	ecodp:publisher="http://publications.europa.eu/resource/authority/corporate-body/EEA"
 	ecodp:priority="normal">
-""")
-    def createManifestLine(self, dataseturi, identifier):
+""" % time.strftime("%Y-%m-%dT%H:%M:%S"))
+
+    def createRemoveLine(self, dataseturi, identifier):
+        """ Create an action to remove the record from the ODP database"""
+        self.manifestnum += 1
+        self.manifestf.write("""<ecodp:action ecodp:id="rm%d" ecodp:object-uri="%s" ecodp:object-type="dataset">
+		<ecodp:remove/>
+	</ecodp:action>\n""" % (self.manifestnum, dataseturi))
+
+    def createAddReplaceLine(self, dataseturi, identifier):
+        """ Create an action to replace or add the record """
         self.manifestnum += 1
         self.manifestf.write("""<ecodp:action ecodp:id="add%d" ecodp:object-uri="%s" ecodp:object-type="dataset">
 		<ecodp:add-replace ecodp:object-status="published"  ecodp:package-path="/datasets/%s.rdf"/>
-	</ecodp:action>\n""" % ( self.manifestnum, dataseturi, identifier))
+	</ecodp:action>\n""" % (self.manifestnum, dataseturi, identifier))
 
     def enditall(self):
         self.manifestf.write("""</ecodp:manifest>\n""")
@@ -34,8 +44,7 @@ class OpenDataPortal:
 # For examples of datafilelink see http://www.eea.europa.eu/data-and-maps/data/urban-atlas/germany/@@rdf
 # For examples of sparql queries see http://www.eea.europa.eu/data-and-maps/data/biogeographical-regions-europe/codelist-for-bio-geographical-regions/@@rdf
 
-    def createRecord(self, dataseturi, identifier):
-        query = { 'query':"""
+    datasetQuery = """
 PREFIX a: <http://www.eea.europa.eu/portal_types/Data#>
 PREFIX dt: <http://www.eea.europa.eu/portal_types/DataTable#>
 PREFIX org: <http://www.eea.europa.eu/portal_types/Organisation#>
@@ -55,7 +64,7 @@ CONSTRUCT {
        dct:license <http://creativecommons.org/licenses/by/2.5/dk/>;
        dct:title ?title;
        dct:description ?description;
-       dct:identifier `STR(?id)`;
+       dct:identifier '%s';
        dct:issued ?effective;
        dct:modified ?modified;
        ecodp:keyword ?theme;
@@ -105,8 +114,74 @@ WHERE {
   }
   FILTER (?dataset = <%s> )
 }
-""" % dataseturi,
-'format':'application/xml' }
+"""
+
+    def createDSRecord(self, dataseturi, identifier):
+        """ Record for normal datasets"""
+        self.createRecord(dataseturi, identifier, self.datasetQuery)
+
+    rdfDatasetQuery = """
+PREFIX void: <http://rdfs.org/ns/void#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX org: <http://www.eea.europa.eu/portal_types/Organisation#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX ecodp: <http://ec.europa.eu/open-data/ontologies/ec-odp#>
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+CONSTRUCT {
+ ?dataset a dcat:Dataset;
+       dct:publisher <http://publications.europa.eu/resource/authority/corporate-body/EEA>;
+       ecodp:datasetStatus <http://ec.europa.eu/open-data/kos/dataset-status/Completed>;
+       ecodp:contactPoint <http://www.eea.europa.eu/data-and-maps/data-providers-and-partners/european-environment-agency>;
+       dct:license <http://creativecommons.org/licenses/by/2.5/dk/>;
+       dct:title ?title;
+       dct:description ?description;
+       dct:identifier '%s';
+       dct:issued ?effective;
+       dct:modified ?modified;
+       ecodp:keyword ?theme;
+       dct:spatial ?pubspatial.
+ ?dataset dcat:distribution ?datafile .
+ ?datafile dcat:accessURL ?downloadUrl.
+ ?datafile a <http://www.w3.org/TR/vocab-dcat#Download>;
+       ecodp:distributionFormat 'application/rdf+xml';
+       dct:description ?dftitle;
+       dct:modified ?dfmodified
+}
+WHERE {
+  {
+   ?dataset a void:Dataset ;
+        dct:title ?title
+   OPTIONAL { ?dataset dct:description ?description }
+   OPTIONAL { ?dataset dct:issued ?effective }
+   OPTIONAL { ?dataset dct:modified ?modified }
+   ?dataset void:subset ?datafile.
+   {
+       SELECT DISTINCT ?datafile STRDT(?remoteUrl, xsd:anyURI) AS ?downloadUrl 
+       WHERE {
+         ?datafile a void:Dataset;
+                   void:dataDump ?remoteUrl
+       }
+   }
+   ?datafile dct:title    ?dftitle
+   OPTIONAL { ?datafile dct:modified ?dfmodified }
+} UNION {
+   ?dataset dct:subject ?dbpsubject.
+   ?dbpsubject rdfs:label ?theme FILTER(LANG(?theme) = 'en')
+  }
+  FILTER (?dataset = <%s> )
+}
+"""
+
+    def createRdfRecord(self, dataseturi, identifier):
+        """ Record for RDF datasets"""
+        self.createRecord(dataseturi, identifier, self.rdfDatasetQuery)
+
+    def createRecord(self, dataseturi, identifier, datasetQuery):
+        query = { 'query': datasetQuery % (identifier, dataseturi),
+            'format':'application/xml' }
 
         url = "http://semantic.eea.europa.eu/sparql?" + urllib.urlencode(query)
 
@@ -127,9 +202,9 @@ WHERE {
         conn.close()
         outf.close()
 
-#------------------------
-#FILTER(?dataset = <http://www.eea.europa.eu/data-and-maps/data/corine-land-cover-2000-clc2000-seamless-vector-database-2>)
-listq = """
+    #------------------------
+    #FILTER(?dataset = <http://www.eea.europa.eu/data-and-maps/data/corine-land-cover-2000-clc2000-seamless-vector-database-2>)
+    _listCurrentDS = """
 PREFIX a: <http://www.eea.europa.eu/portal_types/Data#>
 PREFIX dct: <http://purl.org/dc/terms/>
 SELECT DISTINCT ?dataset ?id
@@ -143,12 +218,70 @@ WHERE {
   FILTER(!BOUND(?isreplaced))
 }
 """
-# ?datafile dct:issued ?effective.
-result = sparql.query("http://semantic.eea.europa.eu/sparql", listq)
-odp = OpenDataPortal()
-for row in result.fetchall():
-    print "\t".join(map(str,row))
-    odp.createRecord(str(row[0]),str(row[1]))
-    odp.createManifestLine(str(row[0]),str(row[1]))
+
+    def queryCurrentDS(self):
+        """ Find current datasets and create metadata records for them """
+        result = sparql.query(self.endpoint, self._listCurrentDS)
+        for row in result.fetchall():
+            print "\t".join(map(str,row))
+            self.createDSRecord(str(row[0]),str(row[1]))
+            self.createAddReplaceLine(str(row[0]),str(row[1]))
+
+    #
+    # List datasets that have become obsolete. We must tell ODP to remove them
+    #
+    _listObsoleteDS = """
+PREFIX a: <http://www.eea.europa.eu/portal_types/Data#>
+PREFIX dct: <http://purl.org/dc/terms/>
+SELECT DISTINCT ?dataset ?id
+WHERE {
+  ?dataset a a:Data ;
+        a:id ?id;
+        dct:description ?description;
+        dct:hasPart ?datatable.
+  ?dataset dct:isReplacedBy ?isreplaced.
+  ?datatable dct:hasPart ?datafile.
+}
+"""
+
+    def queryObsoleteDS(self):
+        result = sparql.query("http://semantic.eea.europa.eu/sparql", self._listObsoleteDS)
+        for row in result.fetchall():
+            print "\t".join(map(str,row))
+            self.createRemoveLine(str(row[0]),str(row[1]))
+    #
+    # Find VoID datasets
+    #
+    _listCurrentVoid = """
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX void: <http://rdfs.org/ns/void#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+
+SELECT DISTINCT ?dataset (bif:subseq(str(?dataset),bif:__max_notnull(bif:strrchr(str(?dataset),'#'),bif:strrchr(str(?dataset),'/'))+1) AS ?id)
+WHERE {
+ ?dataset a void:Dataset;
+            rdfs:label ?label FILTER(?label != '')
+ ?dataset dcterms:creator ?creator.
+ ?creator foaf:homepage ?homepage FILTER (?homepage IN (<http://www.eea.europa.eu/>, <http://www.eea.europa.eu>))
+ ?dataset void:subset ?junior
+ FILTER (?dataset != <http://www.eionet.europa.eu/void.rdf#directory>)
+}
+"""
+# OPTIONAL {?senior void:subset ?dataset }
+# FILTER(!BOUND(?senior))
+    def queryCurrentVoid(self):
+        result = sparql.query(self.endpoint, self._listCurrentVoid)
+        for row in result.fetchall():
+            print "\t".join(map(str,row))
+            self.createRdfRecord(str(row[0]),str(row[1]))
+            self.createAddReplaceLine(str(row[0]),str(row[1]))
+
+
+odp = OpenDataPortal("http://semantic.eea.europa.eu/sparql")
+odp.queryCurrentDS()
+odp.queryCurrentVoid()
+odp.queryObsoleteDS()
 odp.enditall()
+
 # Create zip file here
