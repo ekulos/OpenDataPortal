@@ -32,9 +32,9 @@ class OpenDataPortal:
     def createAddReplaceLine(self, dataseturi, identifier):
         """ Create an action to replace or add the record """
         self.manifestnum += 1
-        self.manifestf.write("""<ecodp:action ecodp:id="add%d" ecodp:object-uri="%s" ecodp:object-type="dataset">
+        self.manifestf.write("""<ecodp:action ecodp:id="add%d" ecodp:object-uri="%s" ecodp:object-type="dataset" ecodp:object-ckan-name="%s">
 		<ecodp:add-replace ecodp:object-status="published"  ecodp:package-path="/datasets/%s.rdf"/>
-	</ecodp:action>\n""" % (self.manifestnum, dataseturi, identifier))
+	</ecodp:action>\n""" % (self.manifestnum, dataseturi, identifier, identifier))
 
     def enditall(self):
         self.manifestf.write("""</ecodp:manifest>\n""")
