@@ -65,6 +65,7 @@ CONSTRUCT {
        dct:title ?title;
        dct:description ?description;
        dct:identifier '%s';
+       ecodp:ckan-name '%s';
        dct:issued ?effective;
        dct:modified ?modified;
        ecodp:keyword ?theme;
@@ -139,6 +140,7 @@ CONSTRUCT {
        dct:title ?title;
        dct:description ?description;
        dct:identifier '%s';
+       ecodp:ckan-name '%s';
        dct:issued ?effective;
        dct:modified ?modified;
        ecodp:keyword ?theme;
@@ -180,9 +182,8 @@ WHERE {
         self.createRecord(dataseturi, identifier, self.rdfDatasetQuery)
 
     def createRecord(self, dataseturi, identifier, datasetQuery):
-        query = { 'query': datasetQuery % (identifier, dataseturi),
+        query = { 'query': datasetQuery % (identifier, identifier, dataseturi),
             'format':'application/xml' }
-
         url = "http://semantic.eea.europa.eu/sparql?" + urllib.urlencode(query)
 
         outf = open('datasets/' + identifier + '.rdf', "w")
