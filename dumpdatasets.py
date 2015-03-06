@@ -14,8 +14,8 @@ class OpenDataPortal:
 <ecodp:manifest
 	xmlns:ecodp="http://ec.europa.eu/open-data/ontologies/ec-odp#"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://ec.europa.eu/open-data/ontologies/protocol-v1.0/ odp-protocol.xsd"
-	ecodp:version="1.0"
+	xsi:schemaLocation="http://open-data.europa.eu/ontologies/protocol-v2.0/odp-protocol.xsd"
+	ecodp:version="2.0"
 	ecodp:package-id="EEA"
 	ecodp:creation-date-time="%s"
 	ecodp:publisher="http://publications.europa.eu/resource/authority/corporate-body/EEA"
