@@ -6,6 +6,11 @@ import sparql
 
 class OpenDataPortal:
 
+    license = 'http://opendatacommons.org/licenses/by/'
+    publisher = 'http://publications.europa.eu/resource/authority/corporate-body/EEA'
+    datasetStatus = 'http://ec.europa.eu/open-data/kos/dataset-status/Completed'
+    contactPoint = 'http://www.eea.europa.eu/data-and-maps/data-providers-and-partners/european-environment-agency'
+
     def __init__(self, endpoint):
        self.endpoint = endpoint
        self.manifestnum = 0
@@ -18,9 +23,9 @@ class OpenDataPortal:
 	ecodp:version="2.0"
 	ecodp:package-id="EEA"
 	ecodp:creation-date-time="%s"
-	ecodp:publisher="http://publications.europa.eu/resource/authority/corporate-body/EEA"
+	ecodp:publisher="%s"
 	ecodp:priority="normal">
-""" % time.strftime("%Y-%m-%dT%H:%M:%S"))
+""" % (time.strftime("%Y-%m-%dT%H:%M:%S"), self.publisher))
 
     def createRemoveLine(self, dataseturi, identifier):
         """ Create an action to remove the record from the ODP database"""
@@ -32,9 +37,9 @@ class OpenDataPortal:
     def createAddReplaceLine(self, dataseturi, identifier):
         """ Create an action to replace or add the record """
         self.manifestnum += 1
-        self.manifestf.write("""<ecodp:action ecodp:id="add%d" ecodp:object-uri="%s" ecodp:object-type="dataset" ecodp:object-ckan-name="%s">
+        self.manifestf.write("""<ecodp:action ecodp:id="add%d" ecodp:object-uri="%s" ecodp:object-type="dataset">
 		<ecodp:add-replace ecodp:object-status="published"  ecodp:package-path="/datasets/%s.rdf"/>
-	</ecodp:action>\n""" % (self.manifestnum, dataseturi, identifier, identifier))
+	</ecodp:action>\n""" % (self.manifestnum, dataseturi, identifier))
 
     def enditall(self):
         self.manifestf.write("""</ecodp:manifest>\n""")
@@ -58,14 +63,13 @@ PREFIX datafile: <http://www.eea.europa.eu/portal_types/DataFile#>
 
 CONSTRUCT {
  ?dataset a dcat:Dataset;
-       dct:publisher <http://publications.europa.eu/resource/authority/corporate-body/EEA>;
-       ecodp:datasetStatus <http://ec.europa.eu/open-data/kos/dataset-status/Completed>;
-       ecodp:contactPoint <http://www.eea.europa.eu/data-and-maps/data-providers-and-partners/european-environment-agency>;
-       dct:license <http://creativecommons.org/licenses/by/2.5/dk/>;
+       dct:publisher <%s>;
+       ecodp:datasetStatus <%s>;
+       ecodp:contactPoint <%s>;
+       dct:license <%s>;
        dct:title ?title;
        dct:description ?description;
        dct:identifier '%s';
-       ecodp:ckan-name '%s';
        dct:issued ?effective;
        dct:modified ?modified;
        ecodp:keyword ?theme;
@@ -133,14 +137,13 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
 CONSTRUCT {
  ?dataset a dcat:Dataset;
-       dct:publisher <http://publications.europa.eu/resource/authority/corporate-body/EEA>;
-       ecodp:datasetStatus <http://ec.europa.eu/open-data/kos/dataset-status/Completed>;
-       ecodp:contactPoint <http://www.eea.europa.eu/data-and-maps/data-providers-and-partners/european-environment-agency>;
-       dct:license <http://creativecommons.org/licenses/by/2.5/dk/>;
+       dct:publisher <%s>;
+       ecodp:datasetStatus <%s>;
+       ecodp:contactPoint <%s>;
+       dct:license <%s>;
        dct:title ?title;
        dct:description ?description;
        dct:identifier '%s';
-       ecodp:ckan-name '%s';
        dct:issued ?effective;
        dct:modified ?modified;
        ecodp:keyword ?theme;
@@ -182,7 +185,12 @@ WHERE {
         self.createRecord(dataseturi, identifier, self.rdfDatasetQuery)
 
     def createRecord(self, dataseturi, identifier, datasetQuery):
-        query = { 'query': datasetQuery % (identifier, identifier, dataseturi),
+        query = { 'query': datasetQuery % (self.publisher,
+                                            self.datasetStatus,
+                                            self.contactPoint,
+                                            self.license,
+                                            identifier,
+                                            dataseturi),
             'format':'application/xml' }
         url = "http://semantic.eea.europa.eu/sparql?" + urllib.urlencode(query)
 
