@@ -60,6 +60,7 @@ PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX datafilelink: <http://www.eea.europa.eu/portal_types/DataFileLink#>
 PREFIX datafile: <http://www.eea.europa.eu/portal_types/DataFile#>
+PREFIX sparql: <http://www.eea.europa.eu/portal_types/Sparql#>
 
 CONSTRUCT {
  ?dataset a dcat:Dataset;
@@ -95,8 +96,8 @@ WHERE {
      {
        SELECT DISTINCT ?datafile STRDT(bif:concat(?datafile,'/at_download/file'), xsd:anyURI) AS ?downloadUrl ?format
        WHERE {
-         ?datafile a datafile:DataFile;
-                   dct:format ?format
+         ?datafile a datafile:DataFile
+#                   dct:format ?format
        }
      }
    } UNION {
@@ -105,6 +106,13 @@ WHERE {
        WHERE {
          ?datafile a datafilelink:DataFileLink;
                    datafilelink:remoteUrl ?remoteUrl
+       }
+     }
+   } UNION {
+     {
+       SELECT DISTINCT ?datafile STRDT(bif:concat(?datafile,'/download.csv'), xsd:anyURI) AS ?downloadUrl 'text/csv' as ?format
+       WHERE {
+         ?datafile a sparql:Sparql
        }
      }
    }
