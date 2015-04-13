@@ -37,9 +37,10 @@ class OpenDataPortal:
     def createAddReplaceLine(self, dataseturi, identifier):
         """ Create an action to replace or add the record """
         self.manifestnum += 1
-        self.manifestf.write("""<ecodp:action ecodp:id="add%d" ecodp:object-uri="%s" ecodp:object-type="dataset">
+        ckan_name = "%s_%s" %(dataseturi.split("/")[-2], identifier)
+        self.manifestf.write("""<ecodp:action ecodp:id="add%d" ecodp:object-uri="%s" ecodp:object-type="dataset" ecodp:object-ckan-name="%s">
 		<ecodp:add-replace ecodp:object-status="published"  ecodp:package-path="/datasets/%s.rdf"/>
-	</ecodp:action>\n""" % (self.manifestnum, dataseturi, identifier))
+	</ecodp:action>\n""" % (self.manifestnum, dataseturi, ckan_name, identifier))
 
     def enditall(self):
         self.manifestf.write("""</ecodp:manifest>\n""")
@@ -71,6 +72,7 @@ CONSTRUCT {
        dct:title ?title;
        dct:description ?description;
        dct:identifier '%s';
+       ecodp:ckan-name '%s';
        dct:issued ?effective;
        dct:modified ?modified;
        ecodp:keyword ?theme;
@@ -152,6 +154,7 @@ CONSTRUCT {
        dct:title ?title;
        dct:description ?description;
        dct:identifier '%s';
+       ecodp:ckan-name '%s';
        dct:issued ?effective;
        dct:modified ?modified;
        ecodp:keyword ?theme;
@@ -193,11 +196,13 @@ WHERE {
         self.createRecord(dataseturi, identifier, self.rdfDatasetQuery)
 
     def createRecord(self, dataseturi, identifier, datasetQuery):
+        ckan_name = "%s_%s" %(dataseturi.split("/")[-2], identifier)
         query = { 'query': datasetQuery % (self.publisher,
                                             self.datasetStatus,
                                             self.contactPoint,
                                             self.license,
                                             identifier,
+                                            ckan_name,
                                             dataseturi),
             'format':'application/xml' }
         url = "http://semantic.eea.europa.eu/sparql?" + urllib.urlencode(query)
