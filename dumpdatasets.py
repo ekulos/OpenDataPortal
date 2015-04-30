@@ -98,8 +98,8 @@ WHERE {
      {
        SELECT DISTINCT ?datafile STRDT(bif:concat(?datafile,'/at_download/file'), xsd:anyURI) AS ?downloadUrl ?format
        WHERE {
-         ?datafile a datafile:DataFile
-#                   dct:format ?format
+         ?datafile a datafile:DataFile;
+                   dct:format ?format
        }
      }
    } UNION {
