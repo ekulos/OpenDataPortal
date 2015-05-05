@@ -94,12 +94,28 @@ WHERE {
    OPTIONAL { ?dataset dct:issued ?effective }
    OPTIONAL { ?dataset dct:modified ?modified }
    ?datatable dct:hasPart ?datafile.
-   { 
+   {
      {
        SELECT DISTINCT ?datafile STRDT(bif:concat(?datafile,'/at_download/file'), xsd:anyURI) AS ?downloadUrl ?format
        WHERE {
          ?datafile a datafile:DataFile;
                    dct:format ?format
+         filter(str(?format) = "application/zip")
+       }
+     }
+   } UNION {
+     {
+       SELECT DISTINCT ?datafile ?format
+       WHERE
+       {
+         { SELECT DISTINCT ?datafile count(?format) as ?formatcnt
+           WHERE {
+             ?datafile a datafile:DataFile;
+             dct:format ?format
+             FILTER (str(?format) != 'application/zip')
+           }
+         } . FILTER (?formatcnt = 1)
+         ?datafile dct:format ?format
        }
      }
    } UNION {
