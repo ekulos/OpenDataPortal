@@ -106,7 +106,7 @@ WHERE {
      }
    } UNION {
      {
-       SELECT DISTINCT ?datafile ?format
+       SELECT DISTINCT ?datafile STRDT(bif:concat(?datafile,'/at_download/file'), xsd:anyURI) AS ?downloadUrl ?format
        WHERE
        {
          { SELECT DISTINCT ?datafile count(?format) as ?formatcnt
