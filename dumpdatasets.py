@@ -4,6 +4,15 @@ import sys,time
 import urllib,urllib2
 import sparql
 
+def reduce_to_length(text, max_length):
+    parts = text.split("-")
+    reduced_text = ""
+    for i in range(1, len(parts) + 1):
+        tmp_reduced_text = "-".join(parts[0:i])
+        if len(tmp_reduced_text) < max_length:
+            reduced_text = tmp_reduced_text
+    return reduced_text
+
 class OpenDataPortal:
 
     license = 'http://opendatacommons.org/licenses/by/'
@@ -269,6 +278,7 @@ WHERE {
         for row in result.fetchall():
             print "\t".join(map(str,row))
             ckan_name = "%s_%s" %(str(row[0]).split("/")[-2], str(row[1]))
+            ckan_name = reduce_to_length(ckan_name, 100)
             self.createDSRecord(str(row[0]),str(row[1]), ckan_name)
             self.createAddReplaceLine(str(row[0]),str(row[1]), ckan_name)
 
@@ -320,6 +330,7 @@ WHERE {
         for row in result.fetchall():
             print "\t".join(map(str,row))
             ckan_name = "void_%s" %str(row[1])
+            ckan_name = reduce_to_length(ckan_name, 100)
             self.createRdfRecord(str(row[0]),str(row[1]), ckan_name)
             self.createAddReplaceLine(str(row[0]),str(row[1]), ckan_name)
 
