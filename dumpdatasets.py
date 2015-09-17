@@ -15,7 +15,7 @@ def reduce_to_length(text, max_length):
 
 class OpenDataPortal:
 
-    license = 'http://opendatacommons.org/licenses/by/'
+    license = 'http://open-data.europa.eu/kos/licence/EuropeanCommission'
     publisher = 'http://publications.europa.eu/resource/authority/corporate-body/EEA'
     datasetStatus = 'http://ec.europa.eu/open-data/kos/dataset-status/Completed'
     contactPoint = 'http://www.eea.europa.eu/data-and-maps/data-providers-and-partners/european-environment-agency'
@@ -26,7 +26,7 @@ class OpenDataPortal:
        self.manifestf = open('manifest.xml','w')
        self.manifestf.write("""<?xml version="1.0" encoding="UTF-8"?>
 <ecodp:manifest
-	xmlns:ecodp="http://ec.europa.eu/open-data/ontologies/ec-odp#"
+	xmlns:ecodp="http://open-data.europa.eu/ontologies/ec-odp#"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://open-data.europa.eu/ontologies/protocol-v2.0/odp-protocol.xsd"
 	ecodp:version="2.0"
@@ -63,7 +63,7 @@ PREFIX a: <http://www.eea.europa.eu/portal_types/Data#>
 PREFIX dt: <http://www.eea.europa.eu/portal_types/DataTable#>
 PREFIX org: <http://www.eea.europa.eu/portal_types/Organisation#>
 PREFIX dct: <http://purl.org/dc/terms/>
-PREFIX ecodp: <http://ec.europa.eu/open-data/ontologies/ec-odp#>
+PREFIX ecodp: <http://open-data.europa.eu/ontologies/ec-odp#>
 PREFIX dcat: <http://www.w3.org/ns/dcat#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -172,7 +172,7 @@ PREFIX void: <http://rdfs.org/ns/void#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX org: <http://www.eea.europa.eu/portal_types/Organisation#>
 PREFIX dct: <http://purl.org/dc/terms/>
-PREFIX ecodp: <http://ec.europa.eu/open-data/ontologies/ec-odp#>
+PREFIX ecodp: <http://open-data.europa.eu/ontologies/ec-odp#>
 PREFIX dcat: <http://www.w3.org/ns/dcat#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
