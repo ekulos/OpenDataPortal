@@ -34,10 +34,9 @@ class OpenDataPortal:
 		<ecodp:remove/>
 	</ecodp:action>\n""" % (self.manifestnum, dataseturi))
 
-    def createAddReplaceLine(self, dataseturi, identifier):
+    def createAddReplaceLine(self, dataseturi, identifier, ckan_name):
         """ Create an action to replace or add the record """
         self.manifestnum += 1
-        ckan_name = "%s_%s" %(dataseturi.split("/")[-2], identifier)
         self.manifestf.write("""<ecodp:action ecodp:id="add%d" ecodp:object-uri="%s" ecodp:object-type="dataset" ecodp:object-ckan-name="%s">
 		<ecodp:add-replace ecodp:object-status="published"  ecodp:package-path="/datasets/%s.rdf"/>
 	</ecodp:action>\n""" % (self.manifestnum, dataseturi, ckan_name, identifier))
@@ -155,9 +154,8 @@ WHERE {
 }
 """
 
-    def createDSRecord(self, dataseturi, identifier):
+    def createDSRecord(self, dataseturi, identifier, ckan_name):
         """ Record for normal datasets"""
-        ckan_name = "%s_%s" %(dataseturi.split("/")[-2], identifier)
         self.createRecord(dataseturi, identifier, self.datasetQuery, ckan_name)
 
     rdfDatasetQuery = """
@@ -216,9 +214,8 @@ WHERE {
 }
 """
 
-    def createRdfRecord(self, dataseturi, identifier):
+    def createRdfRecord(self, dataseturi, identifier, ckan_name):
         """ Record for RDF datasets"""
-        ckan_name = "void_%s" %identifier
         self.createRecord(dataseturi, identifier, self.rdfDatasetQuery, ckan_name)
 
     def createRecord(self, dataseturi, identifier, datasetQuery, ckan_name):
@@ -271,8 +268,9 @@ WHERE {
         result = sparql.query(self.endpoint, self._listCurrentDS)
         for row in result.fetchall():
             print "\t".join(map(str,row))
-            self.createDSRecord(str(row[0]),str(row[1]))
-            self.createAddReplaceLine(str(row[0]),str(row[1]))
+            ckan_name = "%s_%s" %(str(row[0]).split("/")[-2], str(row[1]))
+            self.createDSRecord(str(row[0]),str(row[1]), ckan_name)
+            self.createAddReplaceLine(str(row[0]),str(row[1]), ckan_name)
 
     #
     # List datasets that have become obsolete. We must tell ODP to remove them
@@ -321,8 +319,9 @@ WHERE {
         result = sparql.query(self.endpoint, self._listCurrentVoid)
         for row in result.fetchall():
             print "\t".join(map(str,row))
-            self.createRdfRecord(str(row[0]),str(row[1]))
-            self.createAddReplaceLine(str(row[0]),str(row[1]))
+            ckan_name = "void_%s" %str(row[1])
+            self.createRdfRecord(str(row[0]),str(row[1]), ckan_name)
+            self.createAddReplaceLine(str(row[0]),str(row[1]), ckan_name)
 
 
 odp = OpenDataPortal("http://semantic.eea.europa.eu/sparql")
