@@ -157,7 +157,8 @@ WHERE {
 
     def createDSRecord(self, dataseturi, identifier):
         """ Record for normal datasets"""
-        self.createRecord(dataseturi, identifier, self.datasetQuery)
+        ckan_name = "%s_%s" %(dataseturi.split("/")[-2], identifier)
+        self.createRecord(dataseturi, identifier, self.datasetQuery, ckan_name)
 
     rdfDatasetQuery = """
 PREFIX void: <http://rdfs.org/ns/void#>
@@ -217,10 +218,10 @@ WHERE {
 
     def createRdfRecord(self, dataseturi, identifier):
         """ Record for RDF datasets"""
-        self.createRecord(dataseturi, identifier, self.rdfDatasetQuery)
+        ckan_name = "void_%s" %identifier
+        self.createRecord(dataseturi, identifier, self.rdfDatasetQuery, ckan_name)
 
-    def createRecord(self, dataseturi, identifier, datasetQuery):
-        ckan_name = "%s_%s" %(dataseturi.split("/")[-2], identifier)
+    def createRecord(self, dataseturi, identifier, datasetQuery, ckan_name):
         query = { 'query': datasetQuery % (self.publisher,
                                             self.datasetStatus,
                                             self.contactPoint,
