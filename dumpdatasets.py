@@ -15,7 +15,8 @@ def reduce_to_length(text, max_length):
 
 class OpenDataPortal:
 
-    license = 'http://open-data.europa.eu/kos/licence/EuropeanCommission'
+    license = 'http://opendatacommons.org/licenses/by/'
+    odp_license = 'http://open-data.europa.eu/kos/licence/EuropeanCommission'
     publisher = 'http://publications.europa.eu/resource/authority/corporate-body/EEA'
     datasetStatus = 'http://ec.europa.eu/open-data/kos/dataset-status/Completed'
     contactPoint = 'http://www.eea.europa.eu/data-and-maps/data-providers-and-partners/european-environment-agency'
@@ -71,6 +72,7 @@ PREFIX datafilelink: <http://www.eea.europa.eu/portal_types/DataFileLink#>
 PREFIX datafile: <http://www.eea.europa.eu/portal_types/DataFile#>
 PREFIX sparql: <http://www.eea.europa.eu/portal_types/Sparql#>
 PREFIX file: <http://www.eea.europa.eu/portal_types/File#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 
 CONSTRUCT {
  ?dataset a dcat:Dataset;
@@ -78,6 +80,7 @@ CONSTRUCT {
        ecodp:datasetStatus <%s>;
        ecodp:contactPoint <%s>;
        dct:license <%s>;
+       dct:license ?odp_license;
        dct:title ?title;
        dct:description ?description;
        dct:identifier '%s';
@@ -102,6 +105,7 @@ WHERE {
         dct:hasPart ?datatable.
    OPTIONAL { ?dataset dct:issued ?effective }
    OPTIONAL { ?dataset dct:modified ?modified }
+   {select (STRDT("%s", skos:Concept) as ?odp_license) where {}}
    ?datatable dct:hasPart ?datafile.
    {
      {
@@ -183,6 +187,7 @@ CONSTRUCT {
        ecodp:datasetStatus <%s>;
        ecodp:contactPoint <%s>;
        dct:license <%s>;
+       dct:license ?odp_license;
        dct:title ?title;
        dct:description ?description;
        dct:identifier '%s';
@@ -205,6 +210,7 @@ WHERE {
    OPTIONAL { ?dataset dct:description ?description }
    OPTIONAL { ?dataset dct:issued ?effective }
    OPTIONAL { ?dataset dct:modified ?modified }
+   {select (STRDT("%s", skos:Concept) as ?odp_license) where {}}
    ?dataset void:subset ?datafile.
    {
        SELECT DISTINCT ?datafile STRDT(?remoteUrl, xsd:anyURI) AS ?downloadUrl 
@@ -234,6 +240,7 @@ WHERE {
                                             self.license,
                                             identifier,
                                             ckan_name,
+                                            self.odp_license,
                                             dataseturi),
             'format':'application/xml' }
         url = "http://semantic.eea.europa.eu/sparql?" + urllib.urlencode(query)
