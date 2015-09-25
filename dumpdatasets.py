@@ -73,6 +73,8 @@ PREFIX datafile: <http://www.eea.europa.eu/portal_types/DataFile#>
 PREFIX sparql: <http://www.eea.europa.eu/portal_types/Sparql#>
 PREFIX file: <http://www.eea.europa.eu/portal_types/File#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 CONSTRUCT {
  ?dataset a dcat:Dataset;
@@ -88,7 +90,9 @@ CONSTRUCT {
        dct:issued ?effective;
        dct:modified ?modified;
        ecodp:keyword ?theme;
-       dct:spatial ?pubspatial.
+       dct:spatial ?pubspatial;
+       dct:subject "http://eurovoc.europa.eu/100155";
+       dcat:theme ?dcat_theme.
  ?dataset dcat:distribution ?datafile .
  ?datafile dcat:accessURL ?downloadUrl.
  ?datafile a <http://www.w3.org/TR/vocab-dcat#Download>;
@@ -162,6 +166,11 @@ WHERE {
    ?dataset dct:spatial ?spatial .
    ?spatial owl:sameAs ?pubspatial
         FILTER(REGEX(?pubspatial, '^http://publications.europa.eu/resource/authority/country/'))
+  } UNION {
+    ?dataset cr:tag ?tag.
+      ?dcat_theme a skos:Concept.
+      FILTER (regex(?dcat_theme,"http://eurovoc.europa.eu"))
+      ?dcat_theme rdfs:label ?tag.
   }
   FILTER (?dataset = <%s> )
 }
@@ -180,6 +189,9 @@ PREFIX ecodp: <http://open-data.europa.eu/ontologies/ec-odp#>
 PREFIX dcat: <http://www.w3.org/ns/dcat#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
 
 CONSTRUCT {
  ?dataset a dcat:Dataset;
@@ -195,7 +207,9 @@ CONSTRUCT {
        dct:issued ?effective;
        dct:modified ?modified;
        ecodp:keyword ?theme;
-       dct:spatial ?pubspatial.
+       dct:spatial ?pubspatial;
+       dct:subject "http://eurovoc.europa.eu/100155";
+       dcat:theme ?dcat_theme.
  ?dataset dcat:distribution ?datafile .
  ?datafile dcat:accessURL ?downloadUrl.
  ?datafile a <http://www.w3.org/TR/vocab-dcat#Download>;
@@ -224,6 +238,12 @@ WHERE {
 } UNION {
    ?dataset dct:subject ?dbpsubject.
    ?dbpsubject rdfs:label ?theme FILTER(LANG(?theme) = 'en')
+} UNION {
+      ?dataset dct:subject ?subject.
+      ?subject rdfs:label ?subject_label.
+      ?dcat_theme a skos:Concept.
+      FILTER (regex(?dcat_theme,"http://eurovoc.europa.eu"))
+      ?dcat_theme rdfs:label ?subject_label.
   }
   FILTER (?dataset = <%s> )
 }
