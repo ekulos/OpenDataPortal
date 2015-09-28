@@ -91,7 +91,7 @@ CONSTRUCT {
        dct:modified ?modified;
        ecodp:keyword ?theme;
        dct:spatial ?pubspatial;
-       dct:subject "http://eurovoc.europa.eu/100155";
+       dct:subject <http://eurovoc.europa.eu/100155>;
        dcat:theme ?dcat_theme.
  ?dataset dcat:distribution ?datafile .
  ?datafile dcat:accessURL ?downloadUrl.
@@ -208,7 +208,7 @@ CONSTRUCT {
        dct:modified ?modified;
        ecodp:keyword ?theme;
        dct:spatial ?pubspatial;
-       dct:subject "http://eurovoc.europa.eu/100155";
+       dct:subject <http://eurovoc.europa.eu/100155>;
        dcat:theme ?dcat_theme.
  ?dataset dcat:distribution ?datafile .
  ?datafile dcat:accessURL ?downloadUrl.
