@@ -19,7 +19,13 @@ class OpenDataPortal:
     odp_license = 'http://open-data.europa.eu/kos/licence/EuropeanCommission'
     publisher = 'http://publications.europa.eu/resource/authority/corporate-body/EEA'
     datasetStatus = 'http://ec.europa.eu/open-data/kos/dataset-status/Completed'
-    contactPoint = 'http://www.eea.europa.eu/data-and-maps/data-providers-and-partners/european-environment-agency'
+
+    contactPoint = 'http://www.eea.europa.eu/address.html'
+    contactPoint_type = 'http://xmlns.com/foaf/0.1/Agent'
+    foaf_phone = 'tel:+4533367100'
+    foaf_name = 'European Environment Agency'
+    ecodp_contactAddress = 'Kongens Nytorv 6, 1050 Copenhagen K, Denmark'
+    foaf_workplaceHomepage = 'http://www.eea.europa.eu'
 
     def __init__(self, endpoint):
        self.endpoint = endpoint
@@ -80,7 +86,6 @@ CONSTRUCT {
  ?dataset a dcat:Dataset;
        dct:publisher <%s>;
        ecodp:datasetStatus <%s>;
-       ecodp:contactPoint <%s>;
        dct:license <%s>;
        dct:license ?odp_license;
        dct:title ?title;
@@ -92,7 +97,15 @@ CONSTRUCT {
        ecodp:keyword ?theme;
        dct:spatial ?pubspatial;
        dct:subject <http://eurovoc.europa.eu/100155>;
-       dcat:theme ?dcat_theme.
+       dcat:theme ?dcat_theme;
+
+       ecodp:contactPoint ?ecodp_contactPoint .
+       ?ecodp_contactPoint  rdf:type ?ecodp_contactPoint_type .
+       ?ecodp_contactPoint  foaf:phone ?foaf_phone .
+       ?ecodp_contactPoint  foaf:name  ?foaf_name .
+       ?ecodp_contactPoint  ecodp:contactAddress ?ecodp_contactAddres .
+       ?ecodp_contactPoint foaf:workplaceHomepage ?foaf_workplaceHomepage.
+
  ?dataset dcat:distribution ?datafile .
  ?datafile dcat:accessURL ?downloadUrl.
  ?datafile a <http://www.w3.org/TR/vocab-dcat#Download>;
@@ -109,6 +122,14 @@ WHERE {
         dct:hasPart ?datatable.
    OPTIONAL { ?dataset dct:issued ?effective }
    OPTIONAL { ?dataset dct:modified ?modified }
+
+   {select (<%s> as ?ecodp_contactPoint) where {}}
+   {select (<%s> as ?ecodp_contactPoint_type) where {}}
+   {select ("%s" as ?foaf_phone) where {}}
+   {select ("%s"@en as ?foaf_name) where {}}
+   {select ("%s"@en as ?ecodp_contactAddres) where {}}
+   {select (<%s> as ?foaf_workplaceHomepage) where {}}
+
    {select (STRDT("%s", skos:Concept) as ?odp_license) where {}}
    ?datatable dct:hasPart ?datafile.
    {
@@ -197,7 +218,6 @@ CONSTRUCT {
  ?dataset a dcat:Dataset;
        dct:publisher <%s>;
        ecodp:datasetStatus <%s>;
-       ecodp:contactPoint <%s>;
        dct:license <%s>;
        dct:license ?odp_license;
        dct:title ?title;
@@ -209,7 +229,15 @@ CONSTRUCT {
        ecodp:keyword ?theme;
        dct:spatial ?pubspatial;
        dct:subject <http://eurovoc.europa.eu/100155>;
-       dcat:theme ?dcat_theme.
+       dcat:theme ?dcat_theme;
+
+       ecodp:contactPoint ?ecodp_contactPoint .
+       ?ecodp_contactPoint  rdf:type ?ecodp_contactPoint_type .
+       ?ecodp_contactPoint  foaf:phone ?foaf_phone .
+       ?ecodp_contactPoint  foaf:name  ?foaf_name .
+       ?ecodp_contactPoint  ecodp:contactAddress ?ecodp_contactAddres .
+       ?ecodp_contactPoint foaf:workplaceHomepage ?foaf_workplaceHomepage.
+
  ?dataset dcat:distribution ?datafile .
  ?datafile dcat:accessURL ?downloadUrl.
  ?datafile a <http://www.w3.org/TR/vocab-dcat#Download>;
@@ -224,6 +252,14 @@ WHERE {
    OPTIONAL { ?dataset dct:description ?description }
    OPTIONAL { ?dataset dct:issued ?effective }
    OPTIONAL { ?dataset dct:modified ?modified }
+
+   {select (<%s> as ?ecodp_contactPoint) where {}}
+   {select (<%s> as ?ecodp_contactPoint_type) where {}}
+   {select ("%s" as ?foaf_phone) where {}}
+   {select ("%s"@en as ?foaf_name) where {}}
+   {select ("%s"@en as ?ecodp_contactAddres) where {}}
+   {select (<%s> as ?foaf_workplaceHomepage) where {}}
+
    {select (STRDT("%s", skos:Concept) as ?odp_license) where {}}
    ?dataset void:subset ?datafile.
    {
@@ -256,10 +292,15 @@ WHERE {
     def createRecord(self, dataseturi, identifier, datasetQuery, ckan_name):
         query = { 'query': datasetQuery % (self.publisher,
                                             self.datasetStatus,
-                                            self.contactPoint,
                                             self.license,
                                             identifier,
                                             ckan_name,
+                                            self.contactPoint,
+                                            self.contactPoint_type,
+                                            self.foaf_phone,
+                                            self.foaf_name,
+                                            self.ecodp_contactAddress,
+                                            self.foaf_workplaceHomepage,
                                             self.odp_license,
                                             dataseturi),
             'format':'application/xml' }
