@@ -1,0 +1,27 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+
+INSERT INTO ?harvestedSource
+{?s dct:subject <http://eurovoc.europa.eu/100155>.
+?s dcat:theme <?o>}
+FROM
+?harvestedSource
+
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+PREFIX cr: <http://cr.eionet.europa.eu/ontologies/contreg.rdf#>
+INSERT INTO ?harvestedSource
+{?s dcat:theme ?dcat_theme}
+FROM
+?harvestedSource
+where
+{
+?s cr:tag ?tag.
+?dcat_theme a skos:Concept.
+#FILTER (regex(?dcat_theme,"http://eurovoc.europa.eu"))
+?dcat_theme rdfs:label ?tag.
+}
+
