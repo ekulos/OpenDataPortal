@@ -126,7 +126,7 @@ WHERE {
    OPTIONAL { ?dataset dct:modified ?modified }
    OPTIONAL { ?dataset dct:isReplacedBy ?isreplaced }
    OPTIONAL { ?dataset dct:replaces ?replaces }
-
+   
    {select (<%s> as ?ecodp_contactPoint) where {}}
    {select (<%s> as ?ecodp_contactPoint_type) where {}}
    {select ("%s" as ?foaf_phone) where {}}
@@ -194,7 +194,6 @@ WHERE {
   } UNION {
     ?dataset cr:tag ?tag.
       ?dcat_theme a skos:Concept.
-      FILTER (regex(?dcat_theme,"http://eurovoc.europa.eu"))
       ?dcat_theme rdfs:label ?tag.
   }
   FILTER (?dataset = <%s> )
@@ -257,6 +256,7 @@ WHERE {
    OPTIONAL { ?dataset dct:issued ?effective }
    OPTIONAL { ?dataset dct:modified ?modified }
 
+   
    {select (<%s> as ?ecodp_contactPoint) where {}}
    {select (<%s> as ?ecodp_contactPoint_type) where {}}
    {select ("%s" as ?foaf_phone) where {}}
@@ -282,7 +282,6 @@ WHERE {
       ?dataset dct:subject ?subject.
       ?subject rdfs:label ?subject_label.
       ?dcat_theme a skos:Concept.
-      FILTER (regex(?dcat_theme,"http://eurovoc.europa.eu"))
       ?dcat_theme rdfs:label ?subject_label.
   }
   FILTER (?dataset = <%s> )
