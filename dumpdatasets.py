@@ -96,7 +96,7 @@ CONSTRUCT {
        dct:modified ?modified;
        ecodp:keyword ?theme;
        dct:spatial ?pubspatial;
-       dct:subject <http://eurovoc.europa.eu/100155>;
+       dct:subject ?subject;
        dcat:theme ?dcat_theme;
        dct:isReplacedBy ?isreplaced;
        dct:replaces ?replaces;
@@ -186,7 +186,7 @@ WHERE {
    ?datafile dct:title    ?dftitle .
    ?datafile dct:modified ?dfmodified
   } UNION {
-   ?dataset dct:subject ?theme  FILTER (isLiteral(?theme) && !REGEX(?theme,'[()/]'))
+   ?dataset dct:subject ?subject
   } UNION {
    ?dataset dct:spatial ?spatial .
    ?spatial owl:sameAs ?pubspatial
