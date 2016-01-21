@@ -188,6 +188,8 @@ WHERE {
   } UNION {
    ?dataset dct:subject ?subject
   } UNION {
+   ?dataset dct:subject ?theme  FILTER (isLiteral(?theme) && !REGEX(?theme,'[()/]'))
+  } UNION {
    ?dataset dct:spatial ?spatial .
    ?spatial owl:sameAs ?pubspatial
         FILTER(REGEX(?pubspatial, '^http://publications.europa.eu/resource/authority/country/'))
