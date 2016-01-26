@@ -65,7 +65,64 @@ class OpenDataPortal:
 # For examples of datafilelink see http://www.eea.europa.eu/data-and-maps/data/urban-atlas/germany/@@rdf
 # For examples of sparql queries see http://www.eea.europa.eu/data-and-maps/data/biogeographical-regions-europe/codelist-for-bio-geographical-regions/@@rdf
 
-    datasetQuery = """
+    def datasetQuery(self, old=False):
+        datafile = """
+?datatable dct:hasPart ?datafile.
+   {
+     {
+       SELECT DISTINCT ?datafile STRDT(bif:concat(?datafile,'/at_download/file'), xsd:anyURI) AS ?downloadUrl ?format
+       WHERE {
+         ?datafile a datafile:DataFile;
+                   dct:format ?format
+         filter(str(?format) = "application/zip")
+       }
+     }
+   } UNION {
+     {
+       SELECT DISTINCT ?datafile STRDT(bif:concat(?datafile,'/at_download/file'), xsd:anyURI) AS ?downloadUrl ?format
+       WHERE
+       {
+         { SELECT DISTINCT ?datafile count(?format) as ?formatcnt
+           WHERE {
+             ?datafile a datafile:DataFile;
+             dct:format ?format
+             FILTER (str(?format) != 'application/zip')
+           }
+         } . FILTER (?formatcnt = 1)
+         ?datafile dct:format ?format
+       }
+     }
+   } UNION {
+     {
+       SELECT DISTINCT ?datafile STRDT(?remoteUrl, xsd:anyURI) AS ?downloadUrl 'application/octet-stream' AS ?format
+       WHERE {
+         ?datafile a datafilelink:DataFileLink;
+                   datafilelink:remoteUrl ?remoteUrl
+       }
+     }
+   } UNION {
+     {
+       SELECT DISTINCT ?datafile STRDT(bif:concat(?datafile,'/download.csv'), xsd:anyURI) AS ?downloadUrl 'text/csv' as ?format
+       WHERE {
+         ?datafile a sparql:Sparql
+       }
+     }
+   } UNION {
+     {
+       SELECT DISTINCT ?datafile STRDT(?datafile, xsd:anyURI) AS ?downloadUrl "file" as ?format
+       WHERE {
+         ?datafile a file:File
+       }
+     }
+   }
+   ?datafile dct:title    ?dftitle .
+   ?datafile dct:modified ?dfmodified
+"""
+    
+        if old:
+            datafile = ""
+        
+        return """
 PREFIX a: <http://www.eea.europa.eu/portal_types/Data#>
 PREFIX dt: <http://www.eea.europa.eu/portal_types/DataTable#>
 PREFIX org: <http://www.eea.europa.eu/portal_types/Organisation#>
@@ -135,56 +192,7 @@ WHERE {
    {select (<%s> as ?foaf_workplaceHomepage) where {}}
 
    {select (STRDT("%s", skos:Concept) as ?odp_license) where {}}
-   ?datatable dct:hasPart ?datafile.
-   {
-     {
-       SELECT DISTINCT ?datafile STRDT(bif:concat(?datafile,'/at_download/file'), xsd:anyURI) AS ?downloadUrl ?format
-       WHERE {
-         ?datafile a datafile:DataFile;
-                   dct:format ?format
-         filter(str(?format) = "application/zip")
-       }
-     }
-   } UNION {
-     {
-       SELECT DISTINCT ?datafile STRDT(bif:concat(?datafile,'/at_download/file'), xsd:anyURI) AS ?downloadUrl ?format
-       WHERE
-       {
-         { SELECT DISTINCT ?datafile count(?format) as ?formatcnt
-           WHERE {
-             ?datafile a datafile:DataFile;
-             dct:format ?format
-             FILTER (str(?format) != 'application/zip')
-           }
-         } . FILTER (?formatcnt = 1)
-         ?datafile dct:format ?format
-       }
-     }
-   } UNION {
-     {
-       SELECT DISTINCT ?datafile STRDT(?remoteUrl, xsd:anyURI) AS ?downloadUrl 'application/octet-stream' AS ?format
-       WHERE {
-         ?datafile a datafilelink:DataFileLink;
-                   datafilelink:remoteUrl ?remoteUrl
-       }
-     }
-   } UNION {
-     {
-       SELECT DISTINCT ?datafile STRDT(bif:concat(?datafile,'/download.csv'), xsd:anyURI) AS ?downloadUrl 'text/csv' as ?format
-       WHERE {
-         ?datafile a sparql:Sparql
-       }
-     }
-   } UNION {
-     {
-       SELECT DISTINCT ?datafile STRDT(?datafile, xsd:anyURI) AS ?downloadUrl "file" as ?format
-       WHERE {
-         ?datafile a file:File
-       }
-     }
-   }
-   ?datafile dct:title    ?dftitle .
-   ?datafile dct:modified ?dfmodified
+    """ + datafile + """
   } UNION {
    ?dataset dct:subject ?subject
   } UNION {
@@ -201,10 +209,9 @@ WHERE {
   FILTER (?dataset = <%s> )
 }
 """
-
-    def createDSRecord(self, dataseturi, identifier, ckan_name):
+    def createDSRecord(self, dataseturi, identifier, ckan_name, old=False):
         """ Record for normal datasets"""
-        self.createRecord(dataseturi, identifier, self.datasetQuery, ckan_name)
+        self.createRecord(dataseturi, identifier, self.datasetQuery(old), ckan_name)
 
     rdfDatasetQuery = """
 PREFIX void: <http://rdfs.org/ns/void#>
@@ -217,7 +224,6 @@ PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-PREFIX dcat: <http://www.w3.org/ns/dcat#>
 
 CONSTRUCT {
  ?dataset a dcat:Dataset;
@@ -352,11 +358,11 @@ WHERE {
             print "\t".join(map(str,row))
             ckan_name = "%s_%s" %(str(row[0]).split("/")[-2], str(row[1]))
             ckan_name = reduce_to_length(ckan_name, 100)
-            self.createDSRecord(str(row[0]),str(row[1]), ckan_name)
+            self.createDSRecord(str(row[0]),str(row[1]), ckan_name, old=False)
             self.createAddReplaceLine(str(row[0]),str(row[1]), ckan_name)
             
 #------------------------
-    _listAllDS = """
+    _listOldDS = """
 PREFIX a: <http://www.eea.europa.eu/portal_types/Data#>
 PREFIX dct: <http://purl.org/dc/terms/>
 SELECT DISTINCT ?dataset ?id
@@ -366,17 +372,19 @@ WHERE {
         dct:description ?description;
         dct:hasPart ?datatable.
   OPTIONAL {?dataset dct:isReplacedBy ?isreplaced }
+  ?datatable dct:hasPart ?datafile.
+  FILTER(BOUND(?isreplaced))
 }
 """
-    
-    def queryAllDS(self):
+# FILTER (?dataset = <http://www.eea.europa.eu/data-and-maps/data/fluorinated-greenhouse-gases-aggregated-data-1> )  
+    def queryOldDS(self):
         """ Find datasets and create metadata records for them """
-        result = sparql.query(self.endpoint, self._listAllDS)
+        result = sparql.query(self.endpoint, self._listOldDS)
         for row in result.fetchall():
             print "\t".join(map(str,row))
             ckan_name = "%s_%s" %(str(row[0]).split("/")[-2], str(row[1]))
             ckan_name = reduce_to_length(ckan_name, 100)
-            self.createDSRecord(str(row[0]),str(row[1]), ckan_name)
+            self.createDSRecord(str(row[0]),str(row[1]), ckan_name, old=True)
             self.createAddReplaceLine(str(row[0]),str(row[1]), ckan_name)
 
     #
@@ -417,7 +425,6 @@ WHERE {
  ?dataset dcterms:creator ?creator.
  ?creator foaf:homepage ?homepage FILTER (?homepage IN (<http://www.eea.europa.eu/>, <http://www.eea.europa.eu>))
  ?dataset void:subset ?junior
- FILTER (?dataset != <http://www.eionet.europa.eu/void.rdf#directory>)
 }
 """
 # OPTIONAL {?senior void:subset ?dataset }
@@ -433,9 +440,8 @@ WHERE {
 
 
 odp = OpenDataPortal("http://semantic.eea.europa.eu/sparql")
-# we want all datasets
-#odp.queryCurrentDS()
-odp.queryAllDS()
+odp.queryCurrentDS()
+odp.queryOldDS()
 odp.queryCurrentVoid()
 odp.queryObsoleteDS()
 odp.enditall()
